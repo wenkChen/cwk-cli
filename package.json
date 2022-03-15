@@ -1,0 +1,41 @@
+{
+  "name": "cwk-cli",
+  "version": "1.0.0",
+  "description": "It is my personal cli and some utils",
+  "main": "index.js",
+  "command": "cwk",
+  "bin": {
+    "cwk": "lib/src/bin/index.js"
+  },
+  "scripts": {
+    "dev": "npm i && tsc && npm link"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wenkChen/cwk-cli.git"
+  },
+  "keywords": [
+    "cwk-cli"
+  ],
+  "author": "wenk chen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wenkChen/cwk-cli/issues"
+  },
+  "homepage": "https://github.com/wenkChen/cwk-cli#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "commander": "^9.0.0",
+    "inquirer": "^8.2.1",
+    "md5": "^2.3.0",
+    "ora": "^5.4.1",
+    "qs": "^6.10.3"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^8.2.0",
+    "@types/lodash": "^4.14.180",
+    "@types/md5": "^2.3.2",
+    "@types/node": "^17.0.21",
+    "@types/qs": "^6.9.7"
+  }
+}
