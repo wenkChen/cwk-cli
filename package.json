@@ -37,5 +37,8 @@
     "@types/md5": "^2.3.2",
     "@types/node": "^17.0.21",
     "@types/qs": "^6.9.7"
+  },
+  "directories": {
+    "lib": "lib"
   }
 }

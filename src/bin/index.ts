@@ -9,34 +9,33 @@ const commandConfig = [
   {
     description: "脚手架",
     command: 'cli',
-    alias: '',
+    alias: 'c',
     action: () => startCli()
   },
   {
     description: "翻译",
-    command: 'translate <content>',
-    arg: '<content>',
+    command: 'translate <content> [target]',
     alias: "t",
-    action: (text: string) => getTranslate({
+    action: (text: string, target: string) => getTranslate({
       text,
-      from: 'zh',
-      to: 'en'
+      from: 'auto',
+      to: target || 'en'
     })
   }
 ]
 
 program.version(version)
+  .option('-c, --cli', '选择脚手架模版')
+  .option('-t, --translate <content> [target]', '翻译内容')
 
 
 commandConfig.forEach(config => {
-  const { description, command, action, arg, alias } = config
+  const { description, command, action, alias } = config
   program
     .description(description)
     .command(command)
     .alias(alias)
-    .action((value) => {
-      action(value)
-    })
+    .action(action)
 })
 
 if (!process.argv[2]) program.help()

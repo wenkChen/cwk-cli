@@ -1,12 +1,12 @@
-# cwk-cli
+---
+theme: fancy
+---
 
-there is somg utils for myself
+# 说明
 
-## how to start?
+命令行工具
 
-1. 安装并指向全局
-   npm run dev
+## 目录
 
-2. 命令行
-   cwk t 需要翻译的内容 （需要去 src/translate/config 配置相关信息)
-   cwk cli 脚手架 （未开发）
+1. 翻译文本
+2. 脚手架（开发中）
