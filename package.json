@@ -1,6 +1,6 @@
 {
   "name": "cwk-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "It is my personal cli and some utils",
   "main": "index.js",
   "command": "cwk",
