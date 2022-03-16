@@ -39,9 +39,8 @@ const getTranslate = async (opts: optType = defaultOpts) => {
         sign,
       },
     })
-    const key = JSON.stringify(res.data['trans_result'][0]['src'])
-    const value = JSON.stringify(res.data['trans_result'][0]['dst'])
-    spin.succeed(`${key}:${value}`)
+    const result = res?.data['trans_result']?.[0]?.['dst']
+    spin.succeed(`${opts.text}:${result || '没有找到～'}`)
   } catch (err) {
     spin.fail(`${err}`)
   } finally {
