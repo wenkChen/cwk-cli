@@ -7,35 +7,32 @@ const program = new Command(command)
 
 const commandConfig = [
   {
-    description: "脚手架",
+    description: '脚手架',
     command: 'cli',
     alias: 'c',
-    action: () => startCli()
+    action: () => startCli(),
   },
   {
-    description: "翻译",
+    description: '翻译',
     command: 'translate <content> [target]',
-    alias: "t",
-    action: (text: string, target: string) => getTranslate({
-      text,
-      from: 'auto',
-      to: target || 'en'
-    })
-  }
+    alias: 't',
+    action: (text: string, target: string) =>
+      getTranslate({
+        text,
+        from: 'auto',
+        to: target || 'en',
+      }),
+  },
 ]
 
-program.version(version)
+program
+  .version(version)
   .option('-c, --cli', '选择脚手架模版')
   .option('-t, --translate <content> [target]', '翻译内容')
 
-
-commandConfig.forEach(config => {
+commandConfig.forEach((config) => {
   const { description, command, action, alias } = config
-  program
-    .description(description)
-    .command(command)
-    .alias(alias)
-    .action(action)
+  program.description(description).command(command).alias(alias).action(action)
 })
 
 if (!process.argv[2]) program.help()

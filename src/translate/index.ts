@@ -11,22 +11,24 @@ interface optType {
 const defaultOpts = {
   text: '',
   from: 'zh',
-  to: 'en'
+  to: 'en',
 }
 
 const getTranslate = async (opts: optType = defaultOpts) => {
-  const spin = ora('正在翻译...').start();
+  const spin = ora('正在翻译...').start()
   try {
     if (!opts.text.trim()) {
-      spin.fail("不能输入空的内容！")
+      spin.fail('不能输入空的内容！')
     }
     const salt = `${Math.random() * 1000}`
-    const sign = md5(Object.values({
-      appid,
-      q: opts.text,
-      salt,
-      secretKey
-    }).join(''))
+    const sign = md5(
+      Object.values({
+        appid,
+        q: opts.text,
+        salt,
+        secretKey,
+      }).join('')
+    )
     const res = await request.get(API, {
       params: {
         q: opts.text,
@@ -34,11 +36,11 @@ const getTranslate = async (opts: optType = defaultOpts) => {
         to: opts.to,
         appid,
         salt,
-        sign
-      }
+        sign,
+      },
     })
-    const key = JSON.stringify(res.data['trans_result'][0]["src"])
-    const value = JSON.stringify(res.data['trans_result'][0]["dst"])
+    const key = JSON.stringify(res.data['trans_result'][0]['src'])
+    const value = JSON.stringify(res.data['trans_result'][0]['dst'])
     spin.succeed(`${key}:${value}`)
   } catch (err) {
     spin.fail(`${err}`)

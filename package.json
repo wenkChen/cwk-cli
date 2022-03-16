@@ -1,6 +1,6 @@
 {
   "name": "cwk-cli",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "It is my personal cli and some utils",
   "main": "index.js",
   "command": "cwk",
@@ -8,7 +8,7 @@
     "cwk": "lib/src/bin/index.js"
   },
   "scripts": {
-    "dev": "npm i && tsc && npm link"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -32,13 +32,26 @@
     "qs": "^6.10.3"
   },
   "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
     "@types/inquirer": "^8.2.0",
     "@types/lodash": "^4.14.180",
     "@types/md5": "^2.3.2",
     "@types/node": "^17.0.21",
-    "@types/qs": "^6.9.7"
+    "@types/qs": "^6.9.7",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
+    "eslint": "^8.11.0",
+    "eslint-plugin-react": "^7.29.4",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.6",
+    "prettier": "^2.6.0"
   },
   "directories": {
     "lib": "lib"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": "eslint --fix",
+    "*.{js,ts,jsx,tsx}": "prettier --write ."
   }
 }
