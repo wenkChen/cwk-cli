@@ -40,7 +40,7 @@ const getTranslate = async (opts: optType = defaultOpts) => {
       },
     })
     const result = res?.data['trans_result']?.[0]?.['dst']
-    spin.succeed(`${opts.text}:${result || '没有找到～'}`)
+    spin.succeed(`${result || '没有找到～'}`)
   } catch (err) {
     spin.fail(`${err}`)
   } finally {
