@@ -1,6 +1,6 @@
 {
   "name": "cwk-cli",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "It is my personal cli and some utils",
   "main": "index.js",
   "command": "cwk",
@@ -52,12 +52,12 @@
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,css}": [
       "eslint --fix src/",
-      "prettier --write",
+      "prettier --write .",
       "git add"
     ],
     "*.{json,md}": [
       "eslint --fix src/",
-      "prettier --write",
+      "prettier --write .",
       "git add"
     ]
   }

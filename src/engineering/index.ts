@@ -41,6 +41,7 @@ const startEngineering = (
     const stageCommandMap = {
       eslint: () => {
         execSync(`npm i eslint --save-dev`)
+        execSync(`npx eslint --init`)
         writeIntoPackage({
           'lint-staged': {
             'src/**/*.{js,jsx,ts,tsx,json,css}': ['eslint --fix src/'],
@@ -48,16 +49,15 @@ const startEngineering = (
         })
       },
       commitlint: () => {
-        console.log(
-          '执行了commitlint',
-          !isdepExist('@commitlint/cli'),
-          !isdepExist('@commitlint/config-conventional')
-        )
         !isdepExist('@commitlint/cli') &&
           execSync(`npm install @commitlint/cli --save-dev`)
+
         !isdepExist('@commitlint/config-conventional') &&
           execSync(`npm install @commitlint/config-conventional --save-dev`)
-        execSync('npx husky add .husky/commit-msg "npx commitlint --edit $1"')
+
+        execSync(
+          'npx husky install && npx husky add .husky/commit-msg "npx commitlint --edit $1"'
+        )
       },
       prettier: () => {
         execSync(`npm i prettier -D`)
@@ -70,6 +70,7 @@ const startEngineering = (
             '*.{md,json,css}': ['prettier --write', 'git add'],
           },
         })
+        execSync('npx prettier --write .')
       },
     }
 
