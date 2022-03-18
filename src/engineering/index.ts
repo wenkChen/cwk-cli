@@ -1,8 +1,9 @@
+/* eslint-disable no-useless-escape */
 import inquirer from 'inquirer'
 import ora from 'ora'
 import { getJsonToObject, isdepExist, writeIntoPackage } from '../utils/file'
 import { resolve } from 'path'
-import { readdirSync } from 'fs'
+import { readdirSync, writeFileSync } from 'fs'
 import { execSync } from 'child_process'
 
 const baseDeps = [
@@ -41,7 +42,25 @@ const startEngineering = (
     const stageCommandMap = {
       eslint: () => {
         execSync(`npm i eslint --save-dev`)
-        execSync(`npx eslint --init`)
+        writeFileSync(
+          '.eslintrc.js',
+          `/* eslint-disable */
+          module.exports = {
+            env: {
+              browser: true,
+              es2021: true,
+            },
+            extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+            parser: '@typescript-eslint/parser',
+            parserOptions: {
+              ecmaVersion: 'latest',
+              sourceType: 'module',
+            },
+            plugins: ['@typescript-eslint'],
+            rules: {},
+          }
+          `
+        )
         writeIntoPackage({
           'lint-staged': {
             'src/**/*.{js,jsx,ts,tsx,json,css}': ['eslint --fix src/'],
@@ -58,6 +77,30 @@ const startEngineering = (
         execSync(
           'npx husky install && npx husky add .husky/commit-msg "npx commitlint --edit $1"'
         )
+        writeFileSync(
+          'commintlint.config.js',
+          `
+        /* eslint-disable */
+        module.exports = {
+          extends: ['@commitlint/config-conventional'],
+          parserPreset: {
+            parserOpts: {
+              headerPattern: /^(\w*)(?:\((.*)\))?:[ ]?(.*)$/,
+              headerCorrespondence: ['type', 'scope', 'subject'],
+            },
+          },
+          rules: {
+            'type-empty': [2, 'never'],
+            'type-case': [2, 'always', 'lower-case'],
+            'subject-empty': [2, 'never'],
+            'type-enum': [
+              2,
+              'always',
+              ['feat', 'fix', 'docs', 'style', 'refactor', 'test', 'chore'],
+            ],
+          },
+        }`
+        )
       },
       prettier: () => {
         execSync(`npm i prettier -D`)
@@ -70,19 +113,36 @@ const startEngineering = (
             '*.{md,json,css}': ['prettier --write', 'git add'],
           },
         })
-        execSync('npx prettier --write .')
+        execSync('npx prettier --write src/**')
+        writeFileSync(
+          '.prettierrc.js',
+          `
+        module.exports = {
+          trailingComma: 'es5', // 在对象或数组最后一个元素后面是否加逗号（在ES5中加尾逗号）
+          useTabs: false, //使用空格代替tab缩进
+          tabWidth: 2, // 缩进长度
+          semi: false, // 句末使用分号
+          singleQuote: true, // 单引号（JSX会忽略这个配置）
+          jsxSingleQuote: true, // jsx中使用单引号
+          arrowParens: 'always', //单参数箭头函数参数周围使用圆括号-eg: (x) => x
+        }  `
+        )
       },
     }
 
     // 检查配置文件
     const files = readdirSync(resolve(''))
     options.forEach((item) => {
-      stageCommandMap[item]()
-      // eslint-disable-next-line no-useless-escape
-      const patt = new RegExp(`(\.)?${item}(\.config)?(\.)?[a-z]*`)
-      const isExist = files.some((i) => patt.test(i))
-      if (isExist) {
-        console.log(`${item}已存在独立配置文件`)
+      try {
+        stageCommandMap[item]()
+        // eslint-disable-next-line no-useless-escape
+        const patt = new RegExp(`(\.)?${item}(\.config)?(\.)?[a-z]*`)
+        const isExist = files.some((i) => patt.test(i))
+        if (isExist) {
+          console.log(`${item}已存在独立配置文件`)
+        }
+      } catch (e) {
+        console.log('e', e)
       }
     })
   } catch (e) {

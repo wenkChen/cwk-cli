@@ -11,7 +11,7 @@ const options = [
     type: 'checkbox',
     message: '请选择需要的工程项目?',
     name: 'type',
-    choices: [{ name: '1' }, { name: '2' }, { name: '3' }],
+    choices: ['react', 'vue'],
   },
 ]
 
@@ -19,7 +19,7 @@ export default async function startCli() {
   const spin = ora('请等待...')
   inquirer
     .prompt(options)
-    .then((type) => {
+    .then(() => {
       spin.stop()
     })
     .catch((err) => {
