@@ -1,37 +1,29 @@
 import inquirer from 'inquirer'
 import ora from 'ora'
-import {
-  getJsonToObject,
-  isdepExist,
-  isFileExistInBaseDir,
-  writeIntoPackage,
-} from '../utils/file'
+import { getJsonToObject, isdepExist, writeIntoPackage } from '../utils/file'
 import { resolve } from 'path'
 import { readdirSync } from 'fs'
-import { exec } from 'child_process'
+import { execSync } from 'child_process'
 
 const baseDeps = [
   {
     name: 'husky',
-    install: () => exec('npm i husky --save-dev && npx husky install'),
-    checkInstalled: () => {
-      const isInstalled = Boolean(isdepExist('husky') && readdirSync('.husky'))
-      console.log(`husky ${isInstalled ? '已' : '未'}安装`)
-      return isInstalled
+    install: () => {
+      execSync('npm i husky --save-dev ')
+      execSync('npx husky install ')
     },
+    checkInstalled: () => Boolean(isdepExist('husky') && readdirSync('.husky')),
   },
   {
     name: 'lint-staged',
     install: () => {
-      exec('npm i lint-staged --save-dev')
-      exec('npx husky add .husky/pre-commit `npx lint-staged --allow-empty $1`')
-    },
-    checkInstalled: () => {
-      const isInstalled = Boolean(
-        isdepExist('lint-staged') && getJsonToObject()['lint-staged']
+      execSync('npm i lint-staged --save-dev')
+      execSync(
+        'npx husky add .husky/pre-commit "npx lint-staged --allow-empty $1"'
       )
-      return isInstalled
     },
+    checkInstalled: () =>
+      Boolean(isdepExist('lint-staged') && getJsonToObject()['lint-staged']),
   },
 ]
 
@@ -41,20 +33,18 @@ const startEngineering = (
   try {
     baseDeps.forEach(async ({ name, install, checkInstalled }) => {
       const depInstalled = checkInstalled()
-      const spinner = ora(
-        depInstalled ? `检查${name}是否安装...` : `开始安装:${name}...`
-      ).start()
+      const spinner = ora(`配置${name}中...`).start()
       ;(await !depInstalled) && install()
-      spinner
-        .succeed(depInstalled ? `${name}已安装！` : `安装${name}完成!`)
-        .stop()
+      spinner.succeed(`配置${name}完成!`).stop()
     })
     // 根据选项写入lint-stage
     const stageCommandMap = {
       eslint: () => {
-        exec(`npm i eslint --save-dev`)
+        execSync(`npm i eslint --save-dev`)
         writeIntoPackage({
-          'lint-staged': { '*.{js,ts}': 'eslint --fix' },
+          'lint-staged': {
+            'src/**/*.{js,jsx,ts,tsx,json,css}': ['eslint --fix src/'],
+          },
         })
       },
       commitlint: () => {
@@ -62,19 +52,24 @@ const startEngineering = (
           !isdepExist('@commitlint/cli') &&
           !isdepExist('@commitlint/config-conventional')
         ) {
-          exec(
+          execSync(
             `npm install @commitlint/config-conventional @commitlint/cli --save-dev`
           )
         }
-        exec(
+        execSync(
           'npx husky add .husky/commit-msg `npx --no-install commitlint --edit $1`'
         )
         return {}
       },
       prettier: () => {
-        exec(`npm i prettier -D`)
+        execSync(`npm i prettier -D`)
         writeIntoPackage({
-          'lint-staged': { '*.{js,ts,jsx,tsx,json}': 'prettier --write .' },
+          'lint-staged': {
+            'src/**/*.{js,jsx,ts,tsx,json,css}': [
+              'prettier --write',
+              'git add',
+            ],
+          },
         })
       },
     }
@@ -86,19 +81,20 @@ const startEngineering = (
       // eslint-disable-next-line no-useless-escape
       const patt = new RegExp(`(\.)?${item}(\.config)?(\.)?[a-z]*`)
       const isExist = files.some((i) => patt.test(i))
-      console.log('isExist', isExist)
     })
   } catch (e) {
     console.log('e', e)
   }
 }
 
+const config = ['eslint', 'commitlint', 'prettier']
 const options = [
   {
     type: 'checkbox',
     message: '请选择需要的工程规范?',
     name: 'options',
-    choices: ['eslint', 'commitlint', 'prettier'],
+    default: config,
+    choices: config,
   },
 ]
 

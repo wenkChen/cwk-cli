@@ -1,4 +1,4 @@
-#!usr/bin/env node
+#!/usr/bin/env node
 import { Command } from 'commander'
 import getTranslate from '../translate'
 import getEngineering from '../engineering'
@@ -17,8 +17,7 @@ const commandConfig = [
     description: '翻译',
     command: 'translate <content> [target]',
     alias: 't',
-    action: (text: string, target: string, args: any) => {
-      console.log('first', text, target, ...args)
+    action: (text: string, target: string) => {
       return getTranslate({
         text,
         from: 'auto',
