@@ -1,6 +1,6 @@
 {
   "name": "cwk-cli",
-  "version": "1.1.5",
+  "version": "1.1.8",
   "description": "It is my personal cli and some utils",
   "main": "index.js",
   "command": "cwk",
@@ -42,7 +42,6 @@
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
     "eslint": "^8.11.0",
-    "eslint-plugin-react": "^7.29.4",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.6",
     "prettier": "^2.6.0"
@@ -51,7 +50,12 @@
     "lib": "lib"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css}": [
+    "src/**/*.{js,jsx,ts,tsx,css}": [
+      "eslint --fix src/",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{json,md}": [
       "eslint --fix src/",
       "prettier --write",
       "git add"

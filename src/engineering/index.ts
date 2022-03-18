@@ -48,18 +48,16 @@ const startEngineering = (
         })
       },
       commitlint: () => {
-        if (
-          !isdepExist('@commitlint/cli') &&
+        console.log(
+          '执行了commitlint',
+          !isdepExist('@commitlint/cli'),
           !isdepExist('@commitlint/config-conventional')
-        ) {
-          execSync(
-            `npm install @commitlint/config-conventional @commitlint/cli --save-dev`
-          )
-        }
-        execSync(
-          'npx husky add .husky/commit-msg `npx --no-install commitlint --edit $1`'
         )
-        return {}
+        !isdepExist('@commitlint/cli') &&
+          execSync(`npm install @commitlint/cli --save-dev`)
+        !isdepExist('@commitlint/config-conventional') &&
+          execSync(`npm install @commitlint/config-conventional --save-dev`)
+        execSync('npx husky add .husky/commit-msg "npx commitlint --edit $1"')
       },
       prettier: () => {
         execSync(`npm i prettier -D`)
@@ -69,6 +67,7 @@ const startEngineering = (
               'prettier --write',
               'git add',
             ],
+            '*.{md,json,css}': ['prettier --write', 'git add'],
           },
         })
       },
@@ -81,6 +80,9 @@ const startEngineering = (
       // eslint-disable-next-line no-useless-escape
       const patt = new RegExp(`(\.)?${item}(\.config)?(\.)?[a-z]*`)
       const isExist = files.some((i) => patt.test(i))
+      if (isExist) {
+        console.log(`${item}已存在独立配置文件`)
+      }
     })
   } catch (e) {
     console.log('e', e)

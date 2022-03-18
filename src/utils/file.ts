@@ -23,7 +23,7 @@ export const isdepExist = (
 ) => {
   if (isFileExistInBaseDir(file)) {
     const value = getJsonToObject()?.[depName]
-    return value[dep]
+    return value?.[dep]
   }
   return false
 }
