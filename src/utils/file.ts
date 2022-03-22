@@ -8,5 +8,7 @@ export const ensureDependenceExist = (name: string, isProduction = false) => {
 }
 
 export const writeIntoPackage = (obj: Record<string, unknown>) => {
-  writeJsonSync('package.json', merge(readJsonSync('package.json'), obj))
+  writeJsonSync('package.json', merge(readJsonSync('package.json'), obj), {
+    spaces: 2,
+  })
 }
