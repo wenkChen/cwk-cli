@@ -89,7 +89,7 @@ const startEngineering = (
       const plugin = installAndConfig[item]
       plugin.depends.forEach((i) => !ensureDependenceExist && npmInstall(i))
       plugin.afterInstall()
-      plugin.configFile.forEach(() => downloadGitRepo(item))
+      downloadGitRepo(item, true)
     })
   } catch (err) {
     logError(`${err}`)

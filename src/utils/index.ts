@@ -2,6 +2,8 @@ import { exec } from 'shelljs'
 import downloadGit from 'download-git-repo'
 import { logError, logSuccess } from './log'
 import config from '../config'
+import { removeSync, rename } from 'fs-extra'
+import { existsSync, readdirSync } from 'fs'
 
 export const npmInstall = async (name: string, isProduction = false) => {
   try {
@@ -11,13 +13,34 @@ export const npmInstall = async (name: string, isProduction = false) => {
   }
 }
 
-export const downloadGitRepo = async (fileName: string, path?: string) => {
-  await downloadGit(
-    `${config.registry}/${fileName}`,
-    process.cwd() + `${path ? '/' + path : ''}`,
-    { clone: true },
-    (err: string) => {
-      err ? logError('Download failed') : logSuccess(`Download completed`)
+export const downloadGitRepo = async (
+  dirName: string,
+  onlyFiles?: boolean,
+  path?: string
+) => {
+  const getOnlyFiles = () => {
+    try {
+      if (onlyFiles && existsSync(dirName)) {
+        const files = readdirSync(dirName)
+        files.forEach((i) => rename(`${dirName}/${i}`, process.cwd() + '/' + i))
+        removeSync(dirName)
+      }
+    } catch (error) {
+      logError(`${error}`)
     }
-  )
+  }
+
+  if (!existsSync(dirName)) {
+    await downloadGit(
+      `${config.registry}/${dirName}`,
+      process.cwd() + `${path ? '/' + path : ''}`,
+      (err: string) => {
+        err ? logError('Download failed') : logSuccess(`Download completed`)
+      }
+    )
+    getOnlyFiles()
+  } else {
+    logError(`目录${dirName}存在`)
+    getOnlyFiles()
+  }
 }
